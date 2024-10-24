@@ -1,0 +1,51 @@
+---
+title: External validators
+description: Learn how to extend the validation capabilities of Apisense
+---
+import {Aside} from "@astrojs/starlight/components";
+
+# External validators
+
+These validators are external programs taking in definition and response data as JSON and returning the validation result.
+They are user created and have no limitations except the in- and output.
+
+## Templates
+
+To ease the creation of custom validators there are templates for many languages.
+
+### Official templates
+
+The official templates are found in the repositories of the Buonotti GitHub organization. They have the following naming convention
+
+```
+validator-template-<lang>
+```
+
+Where `lang` is the name of the language the validator is for
+
+### Installing templates
+
+Templates are managed with the Apisense CLI. They can be installed using the following command
+
+```bash
+apisense templates update
+```
+
+This updates all installed validator and auto-discovers and installs official templates.&#x20;
+
+To install an unofficial template you can run the following command
+
+```bash
+apisense template add --lang <lang> --url <git_url>
+```
+
+This allows to add a custom Git repository as a source for a validator template for a custom language.&#x20;
+
+<Aside type="caution">
+    Languages are unique so if you want to add more than one validator for a language make sure to name them differently
+</Aside>
+
+
+
+
+

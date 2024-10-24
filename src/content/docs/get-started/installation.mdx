@@ -1,0 +1,67 @@
+---
+title: Install
+description: Learn how to install Apisense
+---
+import {Aside} from "@astrojs/starlight/components";
+
+# Installation
+
+## Release Binaries
+
+The easiest way of installing Apisense as of now is downloading the binary for your system
+on our [GitHub release page](https://github.com/buonotti/apisense/releases/)
+
+## Go install
+
+<Aside>
+    For this step you need the go toolchain on your system.
+
+    Check out the [official docs](https://go.dev/doc/install) on how to install go
+</Aside>
+
+You can install the binary with go install by running the following command in your shell
+
+```bash
+go install github.com/buonotti/apisense@latest
+```
+
+This command will install the latest available version to `"$GOPATH"/bin`.
+To know where go stores its files run the following command
+
+```bash
+go env GOPATH
+```
+
+## Build from source
+
+<Aside>
+    For this step you need the go toolchain on your system.
+    Also as optional dependencies we recommend having make and [go-swag](https://github.com/swaggo/swag) installed.
+</Aside>
+
+You can also build the project from source.
+To do that first clone the repository then run the `go build` command to produce the `apisense` executable.
+You can then also run `go install` to install the binary to `"$GOPATH/bin"`
+
+```shell
+git clone https://github.com/buonotti/apisense
+cd apisense
+go build
+go install
+```
+
+Optionally you can also do the same steps by running `make`
+
+To install the binary to `$GOPATH/bin` run
+
+```shell
+make
+```
+
+Or to just build the binary run
+
+```shell
+make build
+```
+
+If you want to regenerate the OpenApi spec run `swag init` in the root of the project

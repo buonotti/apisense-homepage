@@ -1,0 +1,76 @@
+---
+title: Definition creation and management
+description: Learn how to create and manage definition files
+---
+
+# Creation and management
+
+Definitions are files that reside in the Apisense definitions directory.
+
+The definitions directory is located in the Apisense app directory which itself is located in the users home directory.
+
+## Create a definition file
+
+### Locally
+
+There are several ways of creating new definition files.
+
+#### CLI
+
+You can use the following command to create a new definition with a given name
+
+```bash
+apisense definition create <name>
+```
+
+This creates a definition in the definitions folder in your system containing the required boilerplate to get started
+
+#### Import from a OpenAPI spec
+
+This method is very handy if you have a lot of endpoints or you don't want to write the required boilerplate yourself
+
+The command to do this is the following
+
+```bash
+apisense definition import --spec <spec> <spec_file>
+```
+
+Currently both OpenAPI v2 (Swagger) and OpenAPI v3.x specifications are supported for importing. The file can be either a JSON or YAML file containing a valid OpenAPI spec. By default the command will only print the converted definitions, you can specify to save them to disk by passing the `--write` flag. Check out the help menu of the command for all available flags.
+
+#### Manual
+
+To create a definition manually simply create a new file ending in `.apisensedef.yml`. The contents of the file must contain all the required fields. See [schema.md](schema.md "mention") for the full details
+
+```bash
+touch "$HOME"/.local/share/apisense/definitions/mydefinition.apisensedef.yml
+```
+
+### Remotely
+
+You can also create a definition file via the Apisense API. Just post the definition to the definitions endpoint to create the definition file in remote. Check out [Broken link](broken-reference "mention") to learn more about the available endpoints
+
+## List all definition files
+
+To list all the definitions simply list all the files in the definitions directory or use the following command. The API also provides an endpoint to list all definitions.
+
+```bash
+apisense definition ls
+```
+
+## Disabling and enabling of definition files
+
+The config has a dedicated field for enabling and disabling definitions: The `ignore_prefix` field. This field in the config contains the character sequence that, when put in front of a definition file, will cause the file to be disabled.
+
+If you list the definitions using the CLI, the program will tell you whether a definition is enabled or not.
+
+To disable a definition you can manually rename the file or use the following CLI command
+
+```bash
+apisense definition disable bluetooth.apisensedef.yml
+```
+
+To enable the definition file just rename the file or use the enable command. Note that in this example the `ignore_prefix` field is set to the default value of: `_`
+
+```bash
+apisense definition enable _bluetooth.apisensedef.yml
+```

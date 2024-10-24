@@ -1,36 +1,41 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
+title: Say goodbye to broken data
+description: Welcome to the Apisense homepage
 template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  tagline: A batteries-included solution to faulty REST-API data
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Get started
+      link: /get-started/quickstart/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+    - text: View on GitHub
+      link: https://github.com/buonotti/apisense
       icon: external
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## Why Apisense?
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="Declarative tests" icon="add-document">
+		Write declarative tests by leveraging the power of Go templates
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="Simplicity" icon="star">
+		No complex configuration is required. Only one binary capable of driving a whole testing environment
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
+	<Card title="Performance" icon="rocket">
+		By being build in the [Go](https://go.dev) programming language, Apisense features a very low performance footprint
 	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="Extensible validation" icon="approve-check">
+		The project was imagined with the most amount of user-freedom possible, thus our validation toolset allows the user
+        to control everything
 	</Card>
 </CardGrid>
+
+## Opensource
+
+Apisense is fully open source licensed under the MIT license
+
+The project was developed in collaboration with the [OpenDataHub](https://opendatahub.com)

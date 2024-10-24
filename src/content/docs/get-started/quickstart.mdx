@@ -1,0 +1,150 @@
+---
+title: Getting Started
+description: Get started with Apisense
+---
+import {LinkCard, TabItem, Tabs} from '@astrojs/starlight/components';
+
+Before getting started make sure you install Apisense
+
+<LinkCard title="Install" href="/get-started/install"/>
+
+Before doing anything you will have to initialize Apisense. This ensures all directories and files needed are set up.
+To do this run the following command in your shell
+
+```bash
+apisense init
+```
+
+To start monitoring endpoints it's as simple as starting the Apisense daemon
+
+```bash
+apisense daemon start
+```
+
+This command will start the daemon in your current shell and start to generate report files.
+
+You will notice that the daemon warns about definitions missing. This is because we have not created any definition files
+to tell Apisense what to monitor.
+
+## Our first definition file
+
+### Creation
+
+Definition files are what we use to know what to monitor.
+You can create a new definition file by running the following command in your shell
+
+```bash
+apisense definition create myFirstDefinition
+```
+
+The program will tell you where the new definition was created.
+By default, Apisense saved definitions to the following path
+
+<Tabs syncKey="os">
+    <TabItem label="Linux">
+        ```
+        $HOME/.local/share/apisense/definitions
+        ```
+    </TabItem>
+    <TabItem label="Windows">
+        ```
+        %appdata%\apisense\definitions
+        ```
+    </TabItem>
+</Tabs>
+
+If you navigate to that folder you will notice a new file named `myFirstDefinition.apisensedef.yml`. Let's see what this file contains
+
+
+```yaml title=myFirstDefinition.apisensedef.yml
+version: 1
+name: "myFirstDefinition"
+# base_url: TODO
+test_case_names:
+  - "default"
+# response_schema: TODO
+```
+
+### A sneak peek at the definition format
+
+The first thing that you probably noted is that the file ends in `.apisensedef.yml`. This is the mandatory extension for all Apisense definitions.
+
+The file is in the YAML markup language.
+It is very similar to JSON in structure but has more human-readable syntax.
+The first field `version` specifies the version of the definition.
+As of now this is version 1
+
+The name field is the name for this definition.
+This name must be unique across all definitions, and it is also recommended to have it match the filename.
+
+The `base_url` field contains the path to the endpoint without the query parameters (you can add those later).
+This is a required field along the `version and name` fields.
+
+The `test_case_names` field can be used to give your test cases a human-readable name.
+This is not required.
+If you are wondering what test cases are check out the !!TODO!! section.
+
+Last but not least we have to tell Apisense what the response should look like.
+If your endpoint has no response this is not needed, if it does we have to add the response schema here.
+
+The response schema adheres to the [json-schema](https://json-schema.org/) spec.
+If you are not accustomed to it, no problem. Let's take a look at an example
+
+Let's assume we have an endpoint responding with the following response
+
+```json
+{
+    "name": "sepp",
+    "surname": "hintner",
+    "age": 69,
+    "favouriteFood": [
+        "pizza",
+        "speck"
+    ],
+    "school": {
+        "name": "TFO Max Valier",
+        "city": "Bozen"
+    }
+}
+```
+
+The schema of this JSON object would look like this
+
+```yaml
+response_schema:
+    type: object
+    properties:
+        name:
+            type: string
+        surname:
+            type: string
+        age:
+            type: number
+        favouriteFood:
+            type: array
+            items:
+                type: string
+        school:
+            type: object
+            properties:
+                name:
+                    type: string
+                city:
+                    type: string
+```
+
+The schema basically lists all properties and for each one specifies the type.
+Check out the json-schema website and the `examples/` folder in the repository to know more.
+
+If you are not sure if you have made a mistake and don't want to blow up production
+you can use the following command to have your definition validated for correctness
+
+```bash
+apisense definition check /path/to/my/awesome/definition.apisensedef.yml
+```
+
+Now you can either wait for the next daemon cycle to see your definition in action or just run a one-shot validation with
+
+```bash
+apisense validate
+```

@@ -1,0 +1,391 @@
+---
+title: Definition schema
+description: Learn about all the available options in a definition file
+---
+import {Aside} from "@astrojs/starlight/components";
+
+# Schema
+
+## Example
+
+The format will be illustrated using the [example](https://github.com/buonotti/apisense/blob/dev/examples/apisense\_demo.apisensedef.yml) available in our GitHub repository:
+
+```yaml title="apisense_demo.apisensedef.yml"
+# The version of the spec.
+version: 1
+
+# The name of the endpoint (used in the report)
+name: "apisense_demo"
+
+# The format of the response (json or xml). Default json
+format: "json"
+
+# The endpoint to call. Variables can be interpolated with {{ .ParamName }} (Go template syntax)
+# There are also two builtin functions: Now and Env
+# Now is used with the following syntax: {{ .Now "<format>" }} you can find the format here: https://pkg.go.dev/time#Time.Format
+# Env is used with the following syntax: {{ .Env "<env_var_name>" }}
+base_url: 'http://localhost:8080/restricted'
+
+# Query parameters to add to the request. You can interpolate variables in the value of each query parameter
+# query_parameters:
+#   - name: "limit"
+#     value: 33
+
+# Variable definitions
+# For all non-constant variables, the number of values must be the same and will be used in order to call the endpoint
+# variables:
+#   - name: "Name"
+#     constant: false
+#     values:
+#       - "Name1"
+#       - 'Name2'
+#
+#   - name: "ApiVersion"
+#     constant: true
+#     values:
+#       - "2"
+
+# Set names for each test case generated. The length has to match the length of the variable variables length (in this example 2)
+# If left empty the test cases are named TestCase1, TestCase2, ...
+test_case_names:
+  - "default"
+# - "Name2Test"
+
+# Sets the HTTP-Method which is used. Allowed values are GET, POST, PUT, DELETE
+method: 'GET'
+
+# Holds an arbitrary payload to send to the api. You can interpolate variables here 
+# payload:
+#   test_data: {{ .FancyNumber }}
+
+# Ok code is the expected status code. Defaults to 200 if it is omitted
+ok_code: 200
+
+# List of names of validators that should not be run. Keep in mind that external validators are named with external.<name>
+# to better symbolize that they are external
+excluded_validators:
+    - "external.data-hole"
+
+# Set the Authorization header to a given value 
+# authorization: "My-Secret-Api-Key"
+
+# Optional information to add a jwt authentication method.
+# Note that the token is requested on each request sent
+jwt_login:
+  # The endpoint that provides the token
+  url: 'http://localhost:8080/login'
+  # The object sent to the api. It can have any structure. 
+  # You can interpolate variables from the secrets file using the same templating language. The Env function is also supported
+  login_payload: 
+      username: '{{ .Username }}'
+      password: '{{ .Password }}'
+  # Name of the top-level json key that contains the token. Nested structures are not yet supported
+  token_key_name: "token"
+
+# Add additional headers to the request. The Authorization header gets overrideen if it is set using the authorization property or the jwt_login property
+headers:
+  Test-Header: "1231313"
+
+# The expected response schema. Must be a valid json-schema
+response_schema:
+  type: object 
+  properties:
+    text: 
+      type: string 
+    manyNumbers:
+      type: array 
+      items:
+        type: number
+    nestedData:
+      type: object 
+      properties:
+        someText:
+          type: string
+        someOtherText:
+          type: string
+```
+
+Now let's go over the fields in the definition file
+
+## Fields
+
+### `version (required)`
+
+The version field specifies the version of the definition file. Currently, the latest version is version 1
+
+### `name (required)`
+
+The name is a unique identifier for the definition. It must be unique and should be somewhat declarative.
+Preferably someone should know by the name and the context which endpoint will be monitored just by looking at the name.
+
+### `format (required)`
+
+This field specifies the response format the API returns.
+Currently, the following formats are supported
+
+* JSON
+* YAML
+
+### `base_url (required)`
+
+<Aside title="Templates available" type="tip">
+    Templates are available here
+</Aside>
+
+This field contains the base URL of the request, meaning the requested path without query parameters.
+
+#### Example
+
+Let's say you want to monitor the following endpoint
+
+```
+https://example.com/notes?completed=true
+```
+
+Then the base URL of the definition would be the following
+
+```
+https://example.com/notes
+```
+
+### `query_parameters`
+
+<Aside title="Templates available" type="tip">
+    Templates are available in the `value` field of each item
+</Aside>
+
+This is a list of query parameters to add to the [#base\_url](#base\_url-required "mention").
+Each one is a pair of name and value
+
+#### Example
+
+```yaml
+query_parameters:
+- name: completed
+  value: '{{ .Completed }}'
+- name: limit
+  value: '10'
+```
+
+This would result in the `Completed` variable being inserted into the `completed` query parameter
+and would result in a URL looking like this
+
+```
+<base_url>?completed=<value_of_Completed>&limit=10
+```
+
+### `variables`
+
+In the variable section of the definition file you can define two types of variables.
+
+* Constant
+* Not Constant
+
+These variables lead to the creation of so-called test cases.
+For each definition file All test cases are run and the results are added to the report.
+
+<Aside type="caution">
+    Test cases are generated regardless if the variable is being used or not
+</Aside>
+
+#### Constant variables
+
+Constant variables have only one constant value and keep their value throughout all test cases
+
+#### Non constant variables
+
+Non-constant variables are variables with multiple values.
+Keep in mind, that the number of values for non-constant variables must not differ for any variable.
+The amount of values in a non-constant variable declaration determines how many test cases there are.
+
+#### Example
+
+A set of variables could look something like this
+
+```yaml
+variables:
+- name: ApiVersion
+  constant: true
+  values:
+  - "2"
+- name: Owner
+  constant: false
+  values:
+  - "Sepp"
+  - ""
+```
+
+And their use in the [#base\_url](#base\_url-required "mention") field like this
+
+```
+https://example.com/api/v{{ .ApiVersion }}/notes
+```
+
+With these query parameters
+
+```
+query_parameters:
+- name: owner
+  value: {{ .Owner }}
+```
+
+This will lead to the creation of two test cases, because the non-constant variables have two values each (in this example there is only one)
+
+The test cases will look like this
+
+```
+https://example.com/api/v2/notes?owner=Sepp
+```
+
+```
+https://example.com/api/v2/notes?owner=
+```
+
+### `test_case_names`
+
+Each test case that gets generated will also get a human-readable name.
+If this field is not set all test cases will be named `TestCaseN` where `N` is the number of test case starting at one
+
+If you want to assign your own names you can populate this array with names for all test cases.
+It is important that the number of names in this list matches the amount of generated test cases
+
+### `method`
+
+This field sets the HTTP method of the requests. By default, this is a GET request.
+Currently, the following HTTP methods are allowed
+
+* GET
+* POST
+* PUT
+* DELETE
+
+### `payload`
+
+<Aside type="caution">
+    Only available on POST or PUT requests
+</Aside>
+
+<Aside title="Templates available" type="tip">
+    Templates are available in any value field of the object
+</Aside>
+
+This can contain an arbitrary object that can be serialized to JSON to send along the request
+
+### `ok_code`
+
+This field defines which code to expect in case of success. If not set defaults to `200 (OK)`
+
+### `excluded_validators`
+
+This is a list of validators to skip in the validation process. They will still show up in the report as skipped
+
+### `authorization`
+
+Use this field to override the value of the Authorization HTTP header.
+Takes precedence over [#headers](#headers "mention") but gets overridden by [#jwt\_login](#jwt\_login "mention")
+
+### `jwt_login`
+
+This field can be used to define a JWT authentication procedure
+
+#### `url`
+
+This field sets the endpoint to send the login request to
+
+#### `login_paylaod`
+
+<Aside title="Templates available" type="tip">
+    Secrets templates are available in any value field of the object
+</Aside>
+
+This contains an arbitrary JSON serializable object to send along the login request containing probably the credentials
+
+#### `token_key_name`
+
+<Aside type="danger">
+    Nested structures are not supported yet
+</Aside>
+
+This contains the name of the top-level property of the response object where the JWT token resides.
+
+#### Example
+
+An example setup could look like this
+
+```yaml
+jwt_login:
+  url: https://example.com/auth/login # Is always POST
+  login_payload:
+    username: {{ .Username }}
+    password: {{ .Password }}
+  token_key_name: token
+```
+
+In this example a following request will be sent
+
+```
+POST https://example.com/auth/login
+```
+
+```json title=payload.json
+{
+    "username": "<value_of_Username>",
+    "password": "<value_of_Password>"
+}
+```
+
+A response like this is expected
+
+```json title=response.json
+{
+    "token": "<jwt_token>"
+}
+```
+
+Check out [Secrets](/definitions/secrets) on how to use secrets to hide sensitive login data in your definition
+
+### `headers`
+
+Here you can add additional headers to add to each request
+
+#### Example
+
+Let's say you want to add a custom header called `AwesomeHeader`. Then the field would look like this
+
+```yaml
+headers:
+    AwesomeHeader: "Awesome!"
+```
+
+### `response_schema`
+
+<Aside>
+    It is recommended to check values of the response using validators and not json-schema
+</Aside>
+
+This field contains the expected response schema on a successful request.
+The schema is in the form of the [json-schema specification](https://json-schema.org/)
+
+## Templating
+
+Some parts in the definition support Go templates. Other than the variables
+defined by the user and default template constructs there are also
+some built-in functions that can be used in the templates
+
+### Built-in functions
+
+The apisense definition template has also two build in functions you can use
+
+* Now
+* Env
+
+#### Now
+
+Now is a function that takes as an argument a valid [go time format string](https://pkg.go.dev/time#Time.Format) and prints out the current time in the provided format upon templating.
+
+Note that the templating happens each time the daemon does a validation cycle.
+
+#### Env
+
+Env takes in a string and prints out the value of the environment variable with the given key. If the key does not exist, the function prints a empty string.
+
