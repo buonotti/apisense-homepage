@@ -8,6 +8,8 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
     site: "https://apisense.dev",
     integrations: [starlight({
+        site: "https://buonotti.github.io",
+        base: "apisense-homepage",
         title: 'Apisense',
         editLink: {
             baseUrl: "https://github.com/buonotti/apisense-homepage/edit/main/"
