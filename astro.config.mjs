@@ -7,6 +7,7 @@ import tailwind from '@astrojs/tailwind';
 // https://astro.build/config
 export default defineConfig({
     site: "https://buonotti.github.io",
+    base: "apisense-homepage",
     integrations: [starlight({
         title: 'Apisense',
         editLink: {
@@ -41,11 +42,5 @@ export default defineConfig({
                 autogenerate: {directory: 'development'},
             },
         ],
-        customCss: [
-            '@fontsource-variable/jetbrains-mono'
-        ],
-        components: {
-            Header: "./src/components/TopNav.astro"
-        }
-    }), tailwind()],
+    })],
 });
