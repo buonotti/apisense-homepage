@@ -6,8 +6,7 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-    site: "https://buonotti.github.io",
-    base: "apisense-homepage",
+    site: "https://apisense.dev",
     integrations: [starlight({
         title: 'Apisense',
         editLink: {
