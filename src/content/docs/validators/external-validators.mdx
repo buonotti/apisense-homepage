@@ -1,8 +1,9 @@
 ---
 title: External validators
 description: Learn how to extend the validation capabilities of Apisense
+sidebar:
+    order: 2
 ---
-import {Aside} from "@astrojs/starlight/components";
 
 # External validators
 
@@ -41,11 +42,6 @@ apisense template add --lang <lang> --url <git_url>
 
 This allows to add a custom Git repository as a source for a validator template for a custom language.&#x20;
 
-<Aside type="caution">
-    Languages are unique so if you want to add more than one validator for a language make sure to name them differently
-</Aside>
-
-
-
-
-
+:::caution
+Languages are unique so if you want to add more than one validator for a language make sure to name them differently
+:::
