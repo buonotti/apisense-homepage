@@ -19,6 +19,7 @@
     "astro": "^4.15.3",
     "preline": "^2.5.1",
     "sharp": "^0.32.5",
+    "starlight-theme-catppuccin": "^1.0.2",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3"
   },
