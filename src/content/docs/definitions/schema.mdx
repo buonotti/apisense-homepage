@@ -1,8 +1,9 @@
 ---
 title: Definition schema
 description: Learn about all the available options in a definition file
+sidebar:
+    order: 1
 ---
-import {Aside} from "@astrojs/starlight/components";
 
 # Schema
 
@@ -128,9 +129,9 @@ Currently, the following formats are supported
 
 ### `base_url (required)`
 
-<Aside title="Templates available" type="tip">
-    Templates are available here
-</Aside>
+:::tip[Templates available]
+Templates are available here
+:::
 
 This field contains the base URL of the request, meaning the requested path without query parameters.
 
@@ -150,9 +151,9 @@ https://example.com/notes
 
 ### `query_parameters`
 
-<Aside title="Templates available" type="tip">
-    Templates are available in the `value` field of each item
-</Aside>
+:::tip[Templates available]
+Templates are available in the `value` field of each item
+:::
 
 This is a list of query parameters to add to the [#base\_url](#base\_url-required "mention").
 Each one is a pair of name and value
@@ -184,9 +185,9 @@ In the variable section of the definition file you can define two types of varia
 These variables lead to the creation of so-called test cases.
 For each definition file All test cases are run and the results are added to the report.
 
-<Aside type="caution">
-    Test cases are generated regardless if the variable is being used or not
-</Aside>
+:::caution
+Test cases are generated regardless if the variable is being used or not
+:::
 
 #### Constant variables
 
@@ -261,13 +262,13 @@ Currently, the following HTTP methods are allowed
 
 ### `payload`
 
-<Aside type="caution">
-    Only available on POST or PUT requests
-</Aside>
+:::caution
+Only available on POST or PUT requests
+:::
 
-<Aside title="Templates available" type="tip">
-    Templates are available in any value field of the object
-</Aside>
+:::tip[Templates available]
+Templates are available in any value field of the object
+:::
 
 This can contain an arbitrary object that can be serialized to JSON to send along the request
 
@@ -294,17 +295,17 @@ This field sets the endpoint to send the login request to
 
 #### `login_paylaod`
 
-<Aside title="Templates available" type="tip">
-    Secrets templates are available in any value field of the object
-</Aside>
+:::tip[Templates available]
+Secrets templates are available in any value field of the object
+:::
 
 This contains an arbitrary JSON serializable object to send along the login request containing probably the credentials
 
 #### `token_key_name`
 
-<Aside type="danger">
-    Nested structures are not supported yet
-</Aside>
+:::danger
+Nested structures are not supported yet
+:::
 
 This contains the name of the top-level property of the response object where the JWT token resides.
 
@@ -359,9 +360,9 @@ headers:
 
 ### `response_schema`
 
-<Aside>
-    It is recommended to check values of the response using validators and not json-schema
-</Aside>
+:::note
+It is recommended to check values of the response using validators and not json-schema
+:::
 
 This field contains the expected response schema on a successful request.
 The schema is in the form of the [json-schema specification](https://json-schema.org/)

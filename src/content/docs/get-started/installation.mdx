@@ -1,8 +1,9 @@
 ---
 title: Install
 description: Learn how to install Apisense
+sidebar:
+    order: 0
 ---
-import {Aside} from "@astrojs/starlight/components";
 
 # Installation
 
@@ -13,11 +14,11 @@ on our [GitHub release page](https://github.com/buonotti/apisense/releases/)
 
 ## Go install
 
-<Aside>
-    For this step you need the go toolchain on your system.
+:::note
+For this step you need the go toolchain on your system.
 
-    Check out the [official docs](https://go.dev/doc/install) on how to install go
-</Aside>
+Check out the [official docs](https://go.dev/doc/install) on how to install go
+:::
 
 You can install the binary with go install by running the following command in your shell
 
@@ -34,10 +35,11 @@ go env GOPATH
 
 ## Build from source
 
-<Aside>
-    For this step you need the go toolchain on your system.
-    Also as optional dependencies we recommend having make and [go-swag](https://github.com/swaggo/swag) installed.
-</Aside>
+:::note
+For this step you need the go toolchain on your system.
+
+Also as optional dependencies we recommend having make and [go-swag](https://github.com/swaggo/swag) installed.
+:::
 
 You can also build the project from source.
 To do that first clone the repository then run the `go build` command to produce the `apisense` executable.
@@ -50,7 +52,7 @@ go build
 go install
 ```
 
-Optionally you can also do the same steps by running `make`
+Optionally you can also achieve the same by running `make`
 
 To install the binary to `$GOPATH/bin` run
 
