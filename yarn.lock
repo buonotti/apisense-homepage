@@ -4294,6 +4294,13 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
 
+starlight-theme-catppuccin@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/starlight-theme-catppuccin/-/starlight-theme-catppuccin-1.0.2.tgz#486ece7b991cb04daa3476b4d0c29b043298cdb0"
+  integrity sha512-gnEFgiqUfjA4X740oZNblW8MOZvJHVuPXzivdjJP3hTUU/lzWYw7tZSMk08DsElT28b+GDvI2I2OXd0/hIlUcA==
+  dependencies:
+    "@astrojs/starlight" "^0.28.3"
+
 stdin-discarder@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/stdin-discarder/-/stdin-discarder-0.2.2.tgz#390037f44c4ae1a1ae535c5fe38dc3aba8d997be"
