@@ -9,7 +9,7 @@ body:
     attributes:
       label: Please complete these first
       options:
-        - label: I have checked there are no other issues reporting this bug
+        - label: I have checked there are no other issues reporting this problem
           required: true
   - type: markdown
     attributes:
