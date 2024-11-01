@@ -1,0 +1,23 @@
+name: Report an issue
+description: Report an issue the homepage has
+body:
+  - type: markdown
+    attributes:
+      value: "## Before getting started complete these tasks"
+  - type: checkboxes
+    id: required-tasks
+    attributes:
+      label: Please complete these first
+      options:
+        - label: I have checked there are no other issues reporting this bug
+          required: true
+  - type: markdown
+    attributes:
+      value: "## Please fill out the follwing required fields"
+  - type: textarea
+    id: issue
+    attributes:
+      label: Describe the issue
+      description: Describe the problem in detail and make sure to add a link to the broken page
+    validations:
+      required: true
