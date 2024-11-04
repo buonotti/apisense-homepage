@@ -10,6 +10,54 @@ sidebar:
 These validators are external programs taking in definition and response data as JSON and returning the validation result.
 They are user created and have no limitations except the in- and output.
 
+## Interface definition 
+
+### Inputs 
+
+Validators get the following json object as input in stdin
+
+```json 
+{
+    "response": {
+        "statusCode": 200,
+        "rawData": {},
+        "url": ""
+    },
+    "endpoint": {
+        "version": 1,
+        "name": "",
+        "baseUrl": "",
+        "method": "",
+        "payload": {},
+        "authorization": "",
+        "jwtLogin": {},
+        "headers": {},
+        "excludedValidators": [],
+        "queryParameters": [],
+        "format": "",
+        "variables": [],
+        "testCaseNames": [],
+        "okCode": 200,
+        "responseSchema": {}
+        
+    }
+}
+```
+
+The `endpoint` property contains the definition used in this test case. The validator can assume that the schema matches so the data can be deserialized into a strongly typed type if possible. 
+
+#### Slim validators 
+
+If the additional context provided by the `endpoint` property is not needed the validator can be declared as "slim".
+
+This leads to the input not containing the `endpoint` property.
+
+### Output 
+
+If validation fails the validator should exit with a non-zero exit code and print an optional message to stderr.
+
+If the validator exits with code 0 Apisense assumes the data was valid 
+
 ## Templates
 
 To ease the creation of custom validators there are templates for many languages.
@@ -26,22 +74,46 @@ Where `lang` is the name of the language the validator is for
 
 ### Installing templates
 
-Templates are managed with the Apisense CLI. They can be installed using the following command
+Templates are managed with the Apisense CLI.
+
+To update the local index with the templates available in the remote repositories run 
 
 ```bash
 apisense templates update
 ```
 
-This updates all installed validator and auto-discovers and installs official templates.&#x20;
-
 To install an unofficial template you can run the following command
 
 ```bash
-apisense template add --lang <lang> --url <git_url>
+apisense templates add --lang <lang> --url <git_url>
 ```
 
-This allows to add a custom Git repository as a source for a validator template for a custom language.&#x20;
+This allows to add a custom Git repository as a source for a validator template for a custom language.
+
+You can also add an unofficial github profile/org to use as repository
+
+```bash 
+apisense templates add-repo --name <name> --url <url>
+```
 
 :::caution
 Languages are unique so if you want to add more than one validator for a language make sure to name them differently
 :::
+
+To create a validator from a template run 
+
+```bash 
+apisense templates create --lang <lang> <name>
+```
+
+:::note 
+Upon creation the template is saved locally for future creation.
+
+To disable this behaviour pass the `--no-cache` flag
+:::
+
+If you want to upgrade the local templates to the latest commit run 
+
+```bash 
+apisense templates upgrade 
+```

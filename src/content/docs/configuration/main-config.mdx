@@ -1,11 +1,266 @@
 ---
 title: Configuring Apisense
 description: Learn how to configure Apisense
-draft: true
 sidebar:
     order: 0
 ---
+import {TabItem, Tabs} from '@astrojs/starlight/components';
 
 # Main config
 
-\[TODO]
+The main configuration file is used to configure the overall behaviour of Apisense 
+
+By default the config file lives in the following folder 
+
+<Tabs syncKey="os">
+    <TabItem label="Linux">
+        ```
+        $HOME/.config/apisense
+        ```
+    </TabItem>
+    <TabItem label="Windows">
+        ```
+        %appdata%\apisense\
+        ```
+    </TabItem>
+</Tabs>
+
+Apisense looks for a file called `apisense.config.yml` in the folder above and if the file is not present or invalid it will run on default values
+
+:::note
+If you use the `config` subcommand of the cli to set a config value and the config file does not exist, Apisense will create the config file to track the change
+:::
+
+## Avaliable options
+
+### `log`
+
+This section controls the logging behaviour
+
+### `log.level`
+
+> default: `info`
+
+Sets the log level to one of the following 
+- debug 
+- info 
+- warn 
+- error 
+- fatal 
+
+### `log.file`
+
+> default: empty
+
+If set logs to the given file instead of stdout
+
+### `daemon`
+
+This section controls the behaviour of the daemon 
+
+### `daemon.interval`
+
+> default: `* * * * *`
+
+Set the interval in which the daemon runs as a [cron](https://www.wikipedia.org/wiki/Cron) expression.
+
+```
+┌───────────── Minute (0 - 59)
+│ ┌───────────── Hour (0 - 23)
+│ │ ┌───────────── Day of Month (1 - 31)
+│ │ │ ┌───────────── Month (1 - 12 or JAN-DEC)
+│ │ │ │ ┌───────────── Day of Week (0 - 7 or SUN-SAT)
+* * * * * 
+```
+
+| Field            | Value Range          | Options                      |
+|------------------|----------------------|------------------------------|
+| **Minute**       | `0-59`               | Exact minute (0–59)          |
+| **Hour**         | `0-23`               | Hour of day (0–23)           |
+| **Day of Month** | `1-31`               | Day of the month (1–31)      |
+| **Month**        | `1-12` or `JAN-DEC`  | Month (1–12 or JAN–DEC)      |
+| **Day of Week**  | `0-7` or `SUN-SAT`   | Day of the week (0–7, SUN–SAT) |
+
+Special characters
+- `*`: Any value 
+- `,`: Multiple values (e.g, `MON,WED,FRI`)
+- `-`: Range (e.g, `9-17`)
+- `-`: Increment (e.g, `*/2` for every half hour)
+
+### `daemon.run_on_startup`
+
+> default: `true`
+
+Sets whether the daemon performs a validation cycle on startup. 
+
+:::tip
+Run `apisense validate` if you only want to do a 1-shot validation run
+:::
+
+### `daemon.ignore_prefix`
+
+> default: `_`
+
+Sets the prefix of definition files that will be ignored by the daemon. 
+All files starting with this character will not be considered
+
+### `daemon.discard`
+
+Configure automatic discarding of old reports
+
+### `daemon.discard.enabled`
+
+> default: `true`
+
+Enables or disables the automatic discarding
+
+### `daemon.discard.max_lifetime`
+
+> default: `720h`
+
+Sets the longest time a report "lives" meaning that if the report is older than this value it gets deleted on the next validation cycle.
+
+The value is a duration string. 
+A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". 
+
+Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"
+
+### `daemon.notification`
+
+Configure daemon alerting 
+
+:::caution
+For email alerts to work the username and password must be set in either the environment or the secrets file.
+:::
+
+### `daemon.notification.enabled`
+
+> default: `false`
+
+Enable or disable alerts 
+
+### `daemon.notification.only_on_error`
+
+> default: `true`
+
+If set to true alerts are only sent if the generated report contains a failed test case 
+
+If set to false the daemon sends an email alert every time a new report is generated 
+
+### `daemon.notification.sender`
+
+> default: empty 
+
+The sender email used in the alert 
+
+### `daemon.notification.receiver`
+
+> default: empty 
+
+The receiver email used in the alert 
+
+### `daemon.notification.smtp_server`
+
+> default: empty
+
+The smtp server to use to send the email 
+
+### `daemon.notification.smtp_port`
+
+> default: `587`
+
+The port on the smtp server to use 
+
+### `ssh`
+
+This section controls the ssh server for the TUI
+
+### `ssh.host`
+
+> default: empty
+
+The host the ssh server listens on. Setting it to an empty string allows any external host to connect
+
+### `ssh.port`
+
+> default: `23232`
+
+The port the ssh server listens on
+
+### `tui`
+
+This section controls the TUI 
+
+:::note
+Due to the upcoming TUIv2 release this is subject to change soon
+:::
+
+### `tui.refresh`
+
+> default: `10`
+
+Interval in ms in which the tui refreshes the ui 
+
+### `api`
+
+This section controls the REST-API 
+
+### `api.host`
+
+> default: empty
+
+The host the ssh server listens on. Setting it to an empty string allows any external host to connect
+
+### `api.port`
+
+> default: `8080`
+
+The port the server listens on 
+
+### `api.auth`
+
+> default: `true`
+
+Enables or disables user authentication
+
+This is used to protect endpoints used to manage the definitions do disallow the editing.
+
+:::note 
+Having auth enables also requires `api.signing_key` to be set in the environment or secrets file
+:::
+
+### `api.swagger`
+
+> default: `true`
+
+Enables swagger ui 
+
+### `validation`
+
+This section controls validation
+
+### `validation.external_validators`
+
+> default: `[]`
+
+Defines the external validators that are available 
+
+An external validator is defined in the following way 
+
+```yaml 
+name: string # The name of the validator (unique)
+path: string # The absolute path to the executable 
+args: string[] # The arguments to pass to the process
+fatal: bool # If set to true the validation chain aborts if this validator fails 
+slim: bool # If set to true the validator recieves less context
+````
+
+## Environment overrides
+
+All the config values can be overriden via environment variables.
+
+To override a config value set the environment variable `APISENSE_<replaced_key>` where `<replaced_key>` is the key of the config value with each `.` replaced with `_` and fully capitalized.
+
+Example:
+
+To override the log level set the `APISENSE_LOG_LEVEL` to e.g, `debug`
